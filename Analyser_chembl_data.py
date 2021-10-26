@@ -104,7 +104,7 @@ chemb_data_cruzain_inib.query("num_lipinski_ro5_violations == 0 & ro3_pass == 'T
 
 
 # %%
-pd.get_dummies(chemb_data_cruzain_inib.query("num_lipinski_ro5_violations == 0 & ro3_pass == 'True'"), columns=["molecular_species"])
+split_especies = pd.get_dummies(chemb_data_cruzain_inib.query("num_lipinski_ro5_violations == 0 & ro3_pass == 'True'"), columns=["molecular_species"])
 
 
 # %%
