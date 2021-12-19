@@ -1,3 +1,4 @@
 /data/chembl_29.db
 /data/chembl_29_sqlite.tar.gz
 *.pdb
+*.com
