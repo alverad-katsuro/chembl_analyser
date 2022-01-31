@@ -79,7 +79,7 @@ def lipinski_pass(num_hdonors, num_hacceptors, mol_weight, mol_logp):
         return {'Pass?': True, "N_RO5": float(len(failed))}
 
 
-def verifica_lipinsky(smiles) -> dict:
+def verifica_lipinski(smiles) -> dict:
     '''
     Returns which of Lipinski's rules a molecule has failed, or an empty list
     
@@ -105,8 +105,14 @@ def verifica_lipinsky(smiles) -> dict:
     resultados['psa'] = float(f"{Chem.MolSurf.TPSA(mol):.2f}")
     
 
-    teste_lin = lipinski_pass(resultados['hbd'], resultados['hba'], resultados['mw_freebase'], resultados['alogp'])
+    teste_lin = lipinski_pass(resultados['hbd_lipinski'], resultados['hba_lipinski'], resultados['mw_freebase'], resultados['alogp'])
 
     resultados['num_lipinski_ro5_violations'] = f"{teste_lin['N_RO5']:.4f}"
 
     return resultados
+
+def atualiza_data_frame_com_lipinski(dataframe, keys):
+  for chemb, smiles in zip(keys.chembl_id, keys.canonical_smiles):
+    propriedades = verifica_lipinski(smiles)
+    for key in propriedades.keys():
+        dataframe.loc[dataframe.chembl_id == chemb, key] = propriedades[key]
