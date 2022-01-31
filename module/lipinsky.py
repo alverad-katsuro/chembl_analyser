@@ -96,13 +96,13 @@ def verifica_lipinsky(smiles) -> dict:
     
     resultados = {}
    
-    resultados['hbd'] = float(f"{Lipinski.NumHDonors(mol):.4f}")
-    resultados['hba'] = float(f"{Lipinski.NumHAcceptors(mol):.4f}")
+    resultados['hbd_lipinski'] = float(f"{Lipinski.NumHDonors(mol):.4f}")
+    resultados['hba_lipinski'] = float(f"{Lipinski.NumHAcceptors(mol):.4f}")
     resultados['mw_freebase'] = float(f"{Descriptors.MolWt(mol):.4f}")
     resultados['alogp'] = float(f"{Crippen.MolLogP(mol):.4f}")
-    resultados['rtb'] = float(f"{Lipinski.NumRotatableBonds(mol):.4f}")
-    resultados['aromatic_rings'] = float(f"{Chem.GetSSSR(mol):.4f}")
-    resultados['psa'] = float(f"{Chem.MolSurf.TPSA(mol):.4f}")
+    resultados['rtb'] = float(f"{Lipinski.NumRotatableBonds(mol):.2f}")
+    resultados['aromatic_rings'] = float(f"{Chem.GetSSSR(mol):.2f}")
+    resultados['psa'] = float(f"{Chem.MolSurf.TPSA(mol):.2f}")
     
 
     teste_lin = lipinski_pass(resultados['hbd'], resultados['hba'], resultados['mw_freebase'], resultados['alogp'])
