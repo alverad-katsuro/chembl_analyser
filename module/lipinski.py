@@ -118,7 +118,7 @@ def verifica_lipinski(smiles) -> dict:
 def modulo_atualiza(jobs, dataframe):
   while True:
     try:
-      chemb, smile = jobs.get()  # 3s timeout
+      chemb, smile = jobs.get(timeout=3)  # 3s timeout
       propriedades = verifica_lipinski(smile)
       for key in list(propriedades):
         dataframe.loc[dataframe.chembl_id == chemb, key] = propriedades[key]
@@ -136,8 +136,8 @@ def counting_threads(jobs, dataframe, threads_num):
     proc.join()
 
 
-def atualiza_data_frame_com_lipinski(keys, dataframe, threads_num):
+def atualiza_data_frame_com_lipinski(ids_com_nan, dataframe, threads_num):
   jobs = queue.Queue()
-  for chemb, smiles in zip(keys.chembl_id, keys.canonical_smiles):
+  for chemb, smiles in zip(ids_com_nan.chembl_id, ids_com_nan.canonical_smiles):
     jobs.put_nowait([chemb, smiles])
   counting_threads(jobs, dataframe, threads_num)
