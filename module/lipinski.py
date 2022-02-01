@@ -14,6 +14,10 @@ from rdkit.Chem import Lipinski
 from rdkit.Chem import Descriptors
 from rdkit.Chem.QED import properties
 
+import subprocess
+import threading
+import queue
+import os
 
 class SmilesError(Exception): pass
 
@@ -111,8 +115,25 @@ def verifica_lipinski(smiles) -> dict:
 
     return resultados
 
-def atualiza_data_frame_com_lipinski(dataframe, keys):
+def modulo_atualiza(jobs, dataframe):
+  while True:
+    try:
+      work = jobs.get(timeout=3)  # 3s timeout
+      propriedades = verifica_lipinski(work[1])
+      for key in propriedades.keys():
+        dataframe.loc[dataframe.chembl_id == work[0], key] = propriedades[key]
+    except queue.Empty:
+      return
+    self.jobs.task_done()
+
+def counting_threads(jobs, dataframe, threads_num):
+    for _ in range(threads_num):
+      processThread = threading.Thread(target=modulo_atualiza, args=(jobs, dataframe))
+      processThread.start()
+
+
+def atualiza_data_frame_com_lipinski(keys, dataframe, threads_num):
+  jobs = queue.Queue()
   for chemb, smiles in zip(keys.chembl_id, keys.canonical_smiles):
-    propriedades = verifica_lipinski(smiles)
-    for key in propriedades.keys():
-        dataframe.loc[dataframe.chembl_id == chemb, key] = propriedades[key]
+    jobs.put_nowait([chemb, smiles])
+  counting_threads(jobs, dataframe, threads_num)
