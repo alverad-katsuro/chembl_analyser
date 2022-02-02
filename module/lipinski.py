@@ -158,7 +158,7 @@ def modulo_atualiza_in_sql(jobs, dataframe, nome_table, con_dir, i):
   while (len(jobs) != 0):
     chemb, smile = jobs.pop()
     propriedades = verifica_lipinski(smile)
-    data = dataframe.loc[dataframe.chembl_id == chemb]
+    data = dataframe.loc[dataframe.chembl_id == chemb].copy()
     for key in list(propriedades):
       data.loc[data.chembl_id == chemb, key] = propriedades[key]
     data.to_sql(nome_table, con, if_exists='append', index=False)
