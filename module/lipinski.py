@@ -8,6 +8,7 @@ rules, etc...
 Uses rdkit
 '''
 
+from multiprocessing import Semaphore
 from rdkit import Chem
 from rdkit.Chem import Crippen
 from rdkit.Chem import Lipinski
@@ -18,6 +19,7 @@ import subprocess
 import threading
 import queue
 import os
+import sqlite3
 
 class SmilesError(Exception): pass
 
@@ -135,9 +137,46 @@ def counting_threads(jobs, dataframe, threads_num):
   for proc in processos:
     proc.join()
 
-
 def atualiza_data_frame_com_lipinski(ids_com_nan, dataframe, threads_num):
   jobs = queue.Queue()
   for chemb, smiles in zip(ids_com_nan.chembl_id, ids_com_nan.canonical_smiles):
     jobs.put_nowait([chemb, smiles])
-  counting_threads(jobs, dataframe, threads_num)
+  counting_threads(jobs, dataframe.copy(), threads_num)
+
+
+def counting_threads_in_sql(jobs, dataframe, nome_table, con, threads_num):
+  processos = []    
+  for i in range(threads_num):
+    processThread = threading.Thread(target=modulo_atualiza_in_sql, args=(jobs[i], dataframe.copy(), nome_table, con, i))
+    processThread.start()
+    processos.append(processThread)
+  for proc in processos:
+    proc.join()
+
+def modulo_atualiza_in_sql(jobs, dataframe, nome_table, con_dir, i):
+  con = sqlite3.connect(f"{con_dir}/dados_atualizados_{i}.db")
+  while (len(jobs) != 0):
+    chemb, smile = jobs.pop()
+    propriedades = verifica_lipinski(smile)
+    for key in list(propriedades):
+      dataframe.loc[dataframe.chembl_id == chemb, key] = propriedades[key]
+    dataframe.to_sql(nome_table, con, if_exists='append', index=False)
+  con.close()
+
+def atualiza_data_frame_com_lipinski_in_sql(ids_com_nan, dataframe, nome_table, con, threads_num):
+  jobs = []
+  for chemb, smiles in zip(ids_com_nan.chembl_id, ids_com_nan.canonical_smiles):
+    jobs.append([chemb, smiles])
+  jobs = list(split(jobs, threads_num))
+  counting_threads_in_sql(jobs, dataframe, nome_table, con, threads_num)
+
+def split(a, n):
+    k, m = divmod(len(a), n)
+    return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
+
+def chama_atualiza_in_sql(ids_com_nan, dataframe, nome_table, con_dir, quantidades, threads_num):
+  for i in range(quantidades):
+    print(f"Parte {i + 1} de {quantidades}")
+    tamanho_ini = int(i * len(ids_com_nan)/quantidades)
+    tamanho_fim = int((i + 1) * len(ids_com_nan)/quantidades)
+    atualiza_data_frame_com_lipinski_in_sql(ids_com_nan.iloc[tamanho_ini:tamanho_fim], dataframe.iloc[tamanho_ini:tamanho_fim], nome_table, con_dir, threads_num)

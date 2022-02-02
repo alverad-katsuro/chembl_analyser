@@ -4,9 +4,8 @@
 # %%
 import pandas as pd
 import sqlite3
-import numpy as np
 import sys, os
-sys.path.append("../module/")
+sys.path.append(os.path.abspath("/home/alverad/chembl_analyser/module"))
 from lipinski import * 
 
 # %%
@@ -41,21 +40,5 @@ ids_com_nan = molregno_chembl_id.loc[molregno_chembl_id.isnull().any(axis=1)][['
 ids_com_nan
 
 # %%
-%%time
-quantidades = 100
-threads_num = 20
-for i in range(quantidades):
-    print(f"Parte {i + 1} de {quantidades}")
-    tamanho_ini = int(i * len(ids_com_nan)/quantidades)
-    tamanho_fim = int((i + 1) * len(ids_com_nan)/quantidades)
-    atualiza_data_frame_com_lipinski(ids_com_nan, molregno_chembl_id, threads_num)
 
-
-# %%
-con_2 = sqlite3.connect('../data/dados_atualizados.db')
-
-# %%
-molregno_chembl_id.to_sql('dados', con_2, if_exists='replace')
-
-# %%
-molregno_chembl_id
+chama_atualiza_in_sql(ids_com_nan, molregno_chembl_id, "dados", '../data/dados_att', 19*3, 19)
