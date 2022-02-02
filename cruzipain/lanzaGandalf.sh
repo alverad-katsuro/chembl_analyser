@@ -8,6 +8,6 @@ date; pwd;
 
 module load python/ml_39-alfredo
 
-python3 job_att_values_database.py >> arquivo_log.txt
+python3 job_att_values_database.py
 
 date
