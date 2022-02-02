@@ -178,11 +178,15 @@ def split(a, n):
 def chama_atualiza_in_sql(ids_com_nan, dataframe, nome_table, con_dir, quantidades, threads_num):
   log = open("arquivo.log", "a")
   log.write("Começou\n")
+  log.close()
   for i in range(quantidades):
+    log = open("arquivo.log", "a")
     print(f"Parte {i + 1} de {quantidades}\n")
     log.write(f"Parte {i + 1} de {quantidades}")
     tamanho_ini = int(i * len(ids_com_nan)/quantidades)
     tamanho_fim = int((i + 1) * len(ids_com_nan)/quantidades)
     atualiza_data_frame_com_lipinski_in_sql(ids_com_nan.iloc[tamanho_ini:tamanho_fim], dataframe.iloc[tamanho_ini:tamanho_fim], nome_table, con_dir, threads_num)
+    log.close()
+  log = open("arquivo.log", "a")
   log.write("Terminou\n")
   log.close()
