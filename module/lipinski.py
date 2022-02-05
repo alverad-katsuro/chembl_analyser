@@ -157,11 +157,16 @@ def modulo_atualiza_in_sql(jobs, dataframe, nome_table, con_dir, i):
   con = sqlite3.connect(f"{con_dir}/dados_atualizados_{i}.db")
   while (len(jobs) != 0):
     chemb, smile = jobs.pop()
-    propriedades = verifica_lipinski(smile)
-    data = dataframe.loc[dataframe.chembl_id == chemb].copy()
-    for key in list(propriedades):
-      data.loc[data.chembl_id == chemb, key] = propriedades[key]
-    data.to_sql(nome_table, con, if_exists='append', index=False)
+    try:
+        propriedades = verifica_lipinski(smile)
+        data = dataframe.loc[dataframe.chembl_id == chemb].copy()
+        for key in list(propriedades):
+          data.loc[data.chembl_id == chemb, key] = propriedades[key]
+        data.to_sql(nome_table, con, if_exists='append', index=False)
+    except:
+        error = open("smile_erros.txt", "a")
+        error.write(f"{smile}\n")
+        error.close()
   con.close()
 
 def atualiza_data_frame_com_lipinski_in_sql(ids_com_nan, dataframe, nome_table, con, threads_num):
@@ -182,7 +187,7 @@ def chama_atualiza_in_sql(ids_com_nan, dataframe, nome_table, con_dir, quantidad
   for i in range(quantidades):
     log = open("arquivo.log", "a")
     print(f"Parte {i + 1} de {quantidades}\n")
-    log.write(f"Parte {i + 1} de {quantidades}")
+    log.write(f"Parte {i + 1} de {quantidades}\n")
     log.close()
     tamanho_ini = int(i * len(ids_com_nan)/quantidades)
     tamanho_fim = int((i + 1) * len(ids_com_nan)/quantidades)

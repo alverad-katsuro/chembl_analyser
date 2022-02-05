@@ -1,0 +1,136 @@
+qua 02 fev 2022 20:09:46 -03
+/home/alverad/chembl_analyser/cruzipain
+[00:18:58] WARNING: not removing hydrogen atom without neighbors
+[01:15:46] WARNING: not removing hydrogen atom without neighbors
+[01:18:49] WARNING: not removing hydrogen atom without neighbors
+[02:35:05] WARNING: not removing hydrogen atom without neighbors
+[02:35:05] WARNING: not removing hydrogen atom without neighbors
+[02:35:05] WARNING: not removing hydrogen atom without neighbors
+[02:39:07] Can't kekulize mol.  Unkekulized atoms: 1 2 3 4 5 6 10 11 15 16 17 19 20 21
+
+Exception in thread Thread-956:
+Traceback (most recent call last):
+  File "/home/alverad/anaconda3/envs/ml_39/lib/python3.9/threading.py", line 973, in _bootstrap_inner
+    self.run()
+  File "/home/alverad/anaconda3/envs/ml_39/lib/python3.9/threading.py", line 910, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/alverad/chembl_analyser/module/lipinski.py", line 160, in modulo_atualiza_in_sql
+    propriedades = verifica_lipinski(smile)
+  File "/home/alverad/chembl_analyser/module/lipinski.py", line 101, in verifica_lipinski
+    raise Exception('%s is not a valid SMILES string' % smiles)
+Exception: Cc1ccc2c(c1)-n1-c(=O)/c=c\c(=O)-n-2-c2cc(C)ccc2-1 is not a valid SMILES string
+Parte 1 de 57
+
+Parte 2 de 57
+
+Parte 3 de 57
+
+Parte 4 de 57
+
+Parte 5 de 57
+
+Parte 6 de 57
+
+Parte 7 de 57
+
+Parte 8 de 57
+
+Parte 9 de 57
+
+Parte 10 de 57
+
+Parte 11 de 57
+
+Parte 12 de 57
+
+Parte 13 de 57
+
+Parte 14 de 57
+
+Parte 15 de 57
+
+Parte 16 de 57
+
+Parte 17 de 57
+
+Parte 18 de 57
+
+Parte 19 de 57
+
+Parte 20 de 57
+
+Parte 21 de 57
+
+Parte 22 de 57
+
+Parte 23 de 57
+
+Parte 24 de 57
+
+Parte 25 de 57
+
+Parte 26 de 57
+
+Parte 27 de 57
+
+Parte 28 de 57
+
+Parte 29 de 57
+
+Parte 30 de 57
+
+Parte 31 de 57
+
+Parte 32 de 57
+
+Parte 33 de 57
+
+Parte 34 de 57
+
+Parte 35 de 57
+
+Parte 36 de 57
+
+Parte 37 de 57
+
+Parte 38 de 57
+
+Parte 39 de 57
+
+Parte 40 de 57
+
+Parte 41 de 57
+
+Parte 42 de 57
+
+Parte 43 de 57
+
+Parte 44 de 57
+
+Parte 45 de 57
+
+Parte 46 de 57
+
+Parte 47 de 57
+
+Parte 48 de 57
+
+Parte 49 de 57
+
+Parte 50 de 57
+
+Parte 51 de 57
+
+Parte 52 de 57
+
+Parte 53 de 57
+
+Parte 54 de 57
+
+Parte 55 de 57
+
+Parte 56 de 57
+
+Parte 57 de 57
+
+qui 03 fev 2022 03:32:17 -03
