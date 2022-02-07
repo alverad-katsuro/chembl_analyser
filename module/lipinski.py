@@ -14,6 +14,7 @@ from rdkit.Chem import Crippen
 from rdkit.Chem import Lipinski
 from rdkit.Chem import Descriptors
 from rdkit.Chem.QED import properties
+import numpy as np
 
 import subprocess
 import threading
@@ -147,7 +148,7 @@ def atualiza_data_frame_com_lipinski(ids_com_nan, dataframe, threads_num):
 def counting_threads_in_sql(jobs, dataframe, nome_table, con, threads_num):
   processos = []    
   for i in range(threads_num):
-    processThread = threading.Thread(target=modulo_atualiza_in_sql, args=(jobs[i], dataframe.copy(), nome_table, con, i))
+    processThread = threading.Thread(target=modulo_atualiza_in_sql, args=(jobs.pop().tolist(), dataframe.copy(), nome_table, con, i))
     processThread.start()
     processos.append(processThread)
   for proc in processos:
@@ -170,15 +171,8 @@ def modulo_atualiza_in_sql(jobs, dataframe, nome_table, con_dir, i):
   con.close()
 
 def atualiza_data_frame_com_lipinski_in_sql(ids_com_nan, dataframe, nome_table, con, threads_num):
-  jobs = []
-  for chemb, smiles in zip(ids_com_nan.chembl_id, ids_com_nan.canonical_smiles):
-    jobs.append([chemb, smiles])
-  jobs = list(split(jobs, threads_num))
+  jobs = np.array_split(ids_com_nan.to_numpy(), threads_num)
   counting_threads_in_sql(jobs, dataframe, nome_table, con, threads_num)
-
-def split(a, n):
-    k, m = divmod(len(a), n)
-    return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
 def chama_atualiza_in_sql(ids_com_nan, dataframe, nome_table, con_dir, quantidades, threads_num):
   log = open("arquivo.log", "a")
@@ -191,7 +185,7 @@ def chama_atualiza_in_sql(ids_com_nan, dataframe, nome_table, con_dir, quantidad
     log.close()
     tamanho_ini = int(i * len(ids_com_nan)/quantidades)
     tamanho_fim = int((i + 1) * len(ids_com_nan)/quantidades)
-    atualiza_data_frame_com_lipinski_in_sql(ids_com_nan.iloc[tamanho_ini:tamanho_fim], dataframe.iloc[tamanho_ini:tamanho_fim], nome_table, con_dir, threads_num)
+    atualiza_data_frame_com_lipinski_in_sql(ids_com_nan.iloc[tamanho_ini:tamanho_fim], dataframe, nome_table, con_dir, threads_num)
   log = open("arquivo.log", "a")
   log.write("Terminou\n")
   log.close()
