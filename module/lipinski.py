@@ -108,13 +108,14 @@ def verifica_lipinski(smiles) -> dict:
   resultados['mw_freebase'] = float(f"{Descriptors.MolWt(mol):.4f}")
   resultados['alogp'] = float(f"{Crippen.MolLogP(mol):.4f}")
   resultados['rtb'] = float(f"{Lipinski.NumRotatableBonds(mol):.2f}")
-  resultados['aromatic_rings'] = float(f"{Chem.GetSSSR(mol):.2f}")
+  resultados['aromatic_rings'] = float(f"{Chem.GetSSSR(mol):.1f}")
   resultados['psa'] = float(f"{Chem.MolSurf.TPSA(mol):.2f}")
-  
+  resultados['heavy_atoms'] = float(f"{mol.GetNumHeavyAtoms():.1f}")
+  resultados['qed_weighted'] = float(f"{Chem.QED.qed(mol):.2f}")
 
   teste_lin = lipinski_pass(resultados['hbd_lipinski'], resultados['hba_lipinski'], resultados['mw_freebase'], resultados['alogp'])
 
-  resultados['num_lipinski_ro5_violations'] = f"{teste_lin['N_RO5']:.4f}"
+  resultados['num_lipinski_ro5_violations'] = float(f"{teste_lin['N_RO5']:.2f}")
 
   return resultados
 
