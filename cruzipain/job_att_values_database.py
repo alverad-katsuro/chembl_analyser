@@ -5,7 +5,7 @@
 import pandas as pd
 import sqlite3
 import sys, os
-sys.path.append(os.path.abspath("/home/alverad/chembl_analyser/module"))
+sys.path.append(os.path.abspath("../module"))
 from lipinski import * 
 
 # %%
@@ -41,4 +41,4 @@ ids_com_nan
 
 # %%
 
-chama_atualiza_in_sql(ids_com_nan, molregno_chembl_id, "dados", '../data/dados_att', 19*3, 19)
+chama_atualiza_in_sql(ids_com_nan, molregno_chembl_id, "dados", '../data/dados_att', 6*3, 6)

@@ -1,0 +1,12 @@
+C=COC(=O)c1ccccc1OCC(O)CNC(C)C
+CC(C)CC(=O)N[C@@H](CC(C)C)C(=O)N[C@H](Cc1c[nH]c2ccccc12)C(=O)N[C@H](CC(=O)O)C(=O)O
+O=[N+]([O-])c1ccc(CCCNc2ccccc2)cc1
+C=C1C[C@@]23O[C@]2(c2ccccc21)C1CC(OC(=O)[C@H](O)[C@@H](NC(=O)OCC)c2cccc(F)c2)C3(C)C1(C)C
+CN1CCC(=O)N(CC(=O)NCc2cc3cc(C(=O)N4CCC(N5C(=O)OCc6ccccc65)CC4)ccc3o2)C1=O
+CC(C)C[C@H](NC(=O)N1CCCC1)C(=O)N[C@H](Cc1c[nH]c2ccccc12)C(=O)NCCC(=O)O
+CCn1nc(-c2ccc(Cl)cc2)c(-c2ccc(Cl)cc2)c(C(C)=O)c1=O
+CCN1CCCC(Nc2nc(Nc3cc(Cl)cc(Cl)c3)c3ccccc3n2)C1
+O=C(NO)[C@H]1CC[C@@H](O)CN1S(=O)(=O)c1ccc(OCc2ccccc2I)cc1
+CCCCCCCCCC(=O)CCl
+O=C(O)CCc1ccccc1CC1C2CCC(O2)C1c1nc(C(=O)NCCc2ccccc2)co1
+Cc1ccc2c(c1)-n1-c(=O)/c=c\c(=O)-n-2-c2cc(C)ccc2-1

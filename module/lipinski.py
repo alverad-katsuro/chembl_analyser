@@ -144,37 +144,36 @@ def atualiza_data_frame_com_lipinski(ids_com_nan, dataframe, threads_num):
     jobs.put_nowait([chemb, smiles])
   counting_threads(jobs, dataframe.copy(), threads_num)
 
-
-def counting_threads_in_sql(jobs, dataframe, nome_table, con, threads_num):
-  processos = []    
-  for i in range(threads_num):
-    processThread = threading.Thread(target=modulo_atualiza_in_sql, args=(jobs.pop().tolist(), dataframe.copy(), nome_table, con, i))
-    processThread.start()
-    processos.append(processThread)
-  for proc in processos:
-    proc.join()
-
 def modulo_atualiza_in_sql(jobs, dataframe, nome_table, con_dir, i):
   con = sqlite3.connect(f"{con_dir}/dados_atualizados_{i}.db")
   while (len(jobs) != 0):
     chemb, smile = jobs.pop()
     try:
         propriedades = verifica_lipinski(smile)
-        data = dataframe.loc[dataframe.chembl_id == chemb].copy()
+        dataframe.loc[dataframe.chembl_id == chemb].copy()
         for key in list(propriedades):
-          data.loc[data.chembl_id == chemb, key] = propriedades[key]
-        data.to_sql(nome_table, con, if_exists='append', index=False)
+          dataframe.loc[dataframe.chembl_id == chemb, key] = propriedades[key]
     except:
         error = open("smile_erros.txt", "a")
         error.write(f"{smile}\n")
         error.close()
+  dataframe.to_sql(nome_table, con, if_exists='append', index=False)
   con.close()
 
 def atualiza_data_frame_com_lipinski_in_sql(ids_com_nan, dataframe, nome_table, con, threads_num):
-  jobs = np.array_split(ids_com_nan.to_numpy(), threads_num)
-  counting_threads_in_sql(jobs, dataframe, nome_table, con, threads_num)
+  jobs = np.array_split(ids_com_nan, threads_num)
+  processos = []    
+  for i in range(1, threads_num):
+    job = jobs.pop()
+    processThread = threading.Thread(target=modulo_atualiza_in_sql, args=(job.to_numpy().tolist(), dataframe.query("chembl_id in @job['chembl_id']").copy(), nome_table, con, i))
+    processThread.start()
+    processos.append(processThread)
+  modulo_atualiza_in_sql(job.to_numpy().tolist(), dataframe.query("chembl_id in @job['chembl_id']").copy(), nome_table, con, 0)
+  for proc in processos:
+    proc.join()
 
 def chama_atualiza_in_sql(ids_com_nan, dataframe, nome_table, con_dir, quantidades, threads_num):
+  dataframe = dataframe.query("chembl_id in @ids_com_nan['chembl_id']")
   log = open("arquivo.log", "a")
   log.write("Começou\n")
   log.close()
@@ -185,7 +184,7 @@ def chama_atualiza_in_sql(ids_com_nan, dataframe, nome_table, con_dir, quantidad
     log.close()
     tamanho_ini = int(i * len(ids_com_nan)/quantidades)
     tamanho_fim = int((i + 1) * len(ids_com_nan)/quantidades)
-    atualiza_data_frame_com_lipinski_in_sql(ids_com_nan.iloc[tamanho_ini:tamanho_fim], dataframe, nome_table, con_dir, threads_num)
+    atualiza_data_frame_com_lipinski_in_sql(ids_com_nan.iloc[tamanho_ini:tamanho_fim], dataframe.iloc[tamanho_ini:tamanho_fim], nome_table, con_dir, threads_num)
   log = open("arquivo.log", "a")
   log.write("Terminou\n")
   log.close()
