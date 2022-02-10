@@ -8,18 +8,14 @@ rules, etc...
 Uses rdkit
 '''
 
-from multiprocessing import Semaphore
 from rdkit import Chem
 from rdkit.Chem import Crippen
 from rdkit.Chem import Lipinski
 from rdkit.Chem import Descriptors
-from rdkit.Chem.QED import properties
 import numpy as np
 
-import subprocess
 import threading
 import queue
-import os
 import sqlite3
 
 class SmilesError(Exception): pass

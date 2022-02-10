@@ -10,3 +10,4 @@ O=C(NO)[C@H]1CC[C@@H](O)CN1S(=O)(=O)c1ccc(OCc2ccccc2I)cc1
 CCCCCCCCCC(=O)CCl
 O=C(O)CCc1ccccc1CC1C2CCC(O2)C1c1nc(C(=O)NCCc2ccccc2)co1
 Cc1ccc2c(c1)-n1-c(=O)/c=c\c(=O)-n-2-c2cc(C)ccc2-1
+Cc1ccc2c(c1)-n1-c(=O)/c=c\c(=O)-n-2-c2cc(C)ccc2-1
