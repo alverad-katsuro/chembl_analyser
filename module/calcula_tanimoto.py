@@ -1,28 +1,36 @@
 import pandas as pd
 import numpy as np
-from rdkit.Chem import RDKFingerprint, MolFromSmiles
+from rdkit.Chem import RDKFingerprint, MolFromSmiles, MolToSmiles, SanitizeMol
 from rdkit.DataStructs import FingerprintSimilarity
-import threading
+from multiprocessing import Process
+import sqlite3
+from uuid import uuid4
+from os import remove, mkdir, rmdir
+
 import sqlite3
 from uuid import uuid4
 from os import remove
 
-def calcula_tanimoto_module(mol, dataframe, uid):
-  columns_name = dataframe.columns.to_list()
-  index_smiles = 0
-  for colum_rot in columns_name:
-    if (colum_rot == 'canonical_smiles'):
-        break
-    else:
-        index_smiles += 1
-  dataframe = dataframe.to_numpy().tolist()
+def sanitize(mol):
+  try:
+      SanitizeMol(mol)
+      return mol
+  except Exception as e:
+      print(f"{MolToSmiles(mol)} {e}")
+
+def calcula_tanimoto_module(mol, columns_name, numpy_arr, uid):
+  if ("canonical_smiles" in columns_name):
+    smiles_index = columns_name.index("canonical_smiles")
+  else:
+    smiles_index = columns_name.index("Smiles")
   data_fim = []
-  while (len(dataframe) != 0):
-    dados = dataframe.pop()
+  numpy_arr = numpy_arr.tolist()
+  while (len(numpy_arr) != 0):
+    dados = numpy_arr.pop()
     try:
-      dados.append(float(f"{FingerprintSimilarity(mol, RDKFingerprint(MolFromSmiles(dados[0]))):.2f}"))   
+      dados.append(float(f"{FingerprintSimilarity(mol, RDKFingerprint(sanitize(MolFromSmiles(dados[smiles_index])))):.2f}"))  
     except:
-      print(f"Error: {dados[0]}\n")
+      print(f"Error: {dados[smiles_index]}\n")
       dados.append(0)
     finally:
       data_fim.append(dados)
@@ -35,22 +43,24 @@ def calcula_tanimoto_module(mol, dataframe, uid):
 
 
 def calcula_tanimoto(smiles, dataframe, threads_num) -> pd:
-  alvo = RDKFingerprint(MolFromSmiles(smiles))
-  jobs = np.array_split(dataframe, threads_num)
+  mol = RDKFingerprint(MolFromSmiles(smiles))
+  columns_name = list(dataframe.columns)
+  dataframe = np.array_split(dataframe.to_numpy().tolist(), threads_num)
   processos = []
   name_data = str(uuid4())[:8]
-  for i in range(1, threads_num):
-    processThread = threading.Thread(target=calcula_tanimoto_module, args=(alvo, jobs.pop().copy(), f"{name_data}_{i}.db"))
-    processThread.start()
-    processos.append(processThread)
-  calcula_tanimoto_module(alvo, jobs.pop(), f"{name_data}_{0}.db")
+  mkdir(name_data)
+  for i in range(threads_num):
+    p = Process(target=calcula_tanimoto_module, args=(mol, columns_name, dataframe.pop(), f"{name_data}/{name_data}_{i}.db"))
+    p.start()
+    processos.append(p)
   for proc in processos:
     proc.join()
-  con = sqlite3.connect(f"{name_data}_{0}.db")
+  con = sqlite3.connect(f"{name_data}/{name_data}_{0}.db")
   data_fim = pd.read_sql("select * from dados", con)
-  remove(f"{name_data}_{0}.db")
+  remove(f"{name_data}/{name_data}_{0}.db")
   for i in range(1, threads_num):
-    con = sqlite3.connect(f"{name_data}_{i}.db")
+    con = sqlite3.connect(f"{name_data}/{name_data}_{i}.db")
     data_fim = pd.concat([data_fim, pd.read_sql("select * from dados", con)])
-    remove(f"{name_data}_{i}.db")
+    remove(f"{name_data}/{name_data}_{i}.db")
+  rmdir(name_data)
   return data_fim

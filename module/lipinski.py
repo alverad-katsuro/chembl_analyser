@@ -13,8 +13,8 @@ from rdkit.Chem import Crippen
 from rdkit.Chem import Lipinski
 from rdkit.Chem import Descriptors
 import numpy as np
+from multiprocessing import Process
 
-import threading
 import queue
 import sqlite3
 
@@ -129,7 +129,7 @@ def modulo_atualiza(jobs, dataframe):
 def counting_threads(jobs, dataframe, threads_num):
   processos = []    
   for _ in range(threads_num):
-    processThread = threading.Thread(target=modulo_atualiza, args=(jobs, dataframe))
+    processThread = Process(target=modulo_atualiza, args=(jobs, dataframe))
     processThread.start()
     processos.append(processThread)
   for proc in processos:
@@ -162,7 +162,7 @@ def atualiza_data_frame_com_lipinski_in_sql(ids_com_nan, dataframe, nome_table, 
   processos = []    
   for i in range(1, threads_num):
     job = jobs.pop()
-    processThread = threading.Thread(target=modulo_atualiza_in_sql, args=(job.to_numpy().tolist(), dataframe.query("chembl_id in @job['chembl_id']").copy(), nome_table, con, i))
+    processThread = Process(target=modulo_atualiza_in_sql, args=(job.to_numpy().tolist(), dataframe.query("chembl_id in @job['chembl_id']").copy(), nome_table, con, i))
     processThread.start()
     processos.append(processThread)
   modulo_atualiza_in_sql(job.to_numpy().tolist(), dataframe.query("chembl_id in @job['chembl_id']").copy(), nome_table, con, 0)
