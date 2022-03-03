@@ -8,6 +8,7 @@ rules, etc...
 Uses rdkit
 '''
 
+from xmlrpc.client import Boolean
 from rdkit import Chem
 from rdkit.Chem import Crippen
 from rdkit.Chem import Lipinski
@@ -71,7 +72,7 @@ def lipinski_trial(num_hdonors, num_hacceptors, mol_weight, mol_logp):
   
   return passed, failed
     
-def lipinski_pass(num_hdonors, num_hacceptors, mol_weight, mol_logp):
+def lipinski_pass_modulo(num_hdonors, num_hacceptors, mol_weight, mol_logp):
   '''
   Wraps around lipinski trial, but returns a simple pass/fail True/False
   '''
@@ -81,6 +82,39 @@ def lipinski_pass(num_hdonors, num_hacceptors, mol_weight, mol_logp):
   else:
       return {'Pass?': True, "N_RO5": float(len(failed))}
 
+def lipinski_pass(smiles) -> Boolean:
+  mol = Chem.MolFromSmiles(smiles)
+  if mol is None:
+      raise Exception('%s is not a valid SMILES string' % smiles)
+  
+  resultados = {}
+  
+  resultados['hbd_lipinski'] = float(f"{Lipinski.NumHDonors(mol):.4f}")
+  resultados['hba_lipinski'] = float(f"{Lipinski.NumHAcceptors(mol):.4f}")
+  resultados['mw_freebase'] = float(f"{Descriptors.MolWt(mol):.4f}")
+  resultados['alogp'] = float(f"{Crippen.MolLogP(mol):.4f}")
+  resultados['rtb'] = float(f"{Lipinski.NumRotatableBonds(mol):.2f}")
+  resultados['aromatic_rings'] = float(f"{Chem.GetSSSR(mol):.1f}")
+  resultados['psa'] = float(f"{Chem.MolSurf.TPSA(mol):.2f}")
+  resultados['heavy_atoms'] = float(f"{mol.GetNumHeavyAtoms():.1f}")
+  resultados['qed_weighted'] = float(f"{Chem.QED.qed(mol):.2f}")
+  return lipinski_pass_modulo(resultados['hbd_lipinski'], resultados['hba_lipinski'], resultados['mw_freebase'], resultados['alogp'])
+
+def lipinski_pass_dataframe(dataframe) -> list:
+  columns_name = list(dataframe.columns)
+  if ("canonical_smiles" in columns_name):
+    col = "canonical_smiles"
+  else:
+    col = "Smiles"
+  dataframe = dataframe[col].to_numpy().tolist()
+  valores = []
+  for smiles in dataframe:
+    try:
+      valores.append(lipinski_pass(smiles)["Pass?"])
+    except:
+      valores.append(np.nan)
+  return valores
+  
 
 def verifica_lipinski(smiles) -> dict:
   '''
