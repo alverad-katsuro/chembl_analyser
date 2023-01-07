@@ -1,0 +1,44 @@
+def Asphericity(row):
+    return float(f'{Chem.Descriptors3D.Asphericity(MolFromSmiles(row.SMILES)):.4f}')
+df['Asphericity'] = df.apply(lambda row: Asphericity(row), axis=1)
+
+def Eccentricity(row):
+    return float(f'{Chem.Descriptors3D.Eccentricity(MolFromSmiles(row.SMILES)):.4f}')
+df['Eccentricity'] = df.apply(lambda row: Eccentricity(row), axis=1)
+
+def InertialShapeFactor(row):
+    return float(f'{Chem.Descriptors3D.InertialShapeFactor(MolFromSmiles(row.SMILES)):.4f}')
+df['InertialShapeFactor'] = df.apply(lambda row: InertialShapeFactor(row), axis=1)
+
+def NPR1(row):
+    return float(f'{Chem.Descriptors3D.NPR1(MolFromSmiles(row.SMILES)):.4f}')
+df['NPR1'] = df.apply(lambda row: NPR1(row), axis=1)
+
+def NPR2(row):
+    return float(f'{Chem.Descriptors3D.NPR2(MolFromSmiles(row.SMILES)):.4f}')
+df['NPR2'] = df.apply(lambda row: NPR2(row), axis=1)
+
+def PMI1(row):
+    return float(f'{Chem.Descriptors3D.PMI1(MolFromSmiles(row.SMILES)):.4f}')
+df['PMI1'] = df.apply(lambda row: PMI1(row), axis=1)
+
+def PMI2(row):
+    return float(f'{Chem.Descriptors3D.PMI2(MolFromSmiles(row.SMILES)):.4f}')
+df['PMI2'] = df.apply(lambda row: PMI2(row), axis=1)
+
+def PMI3(row):
+    return float(f'{Chem.Descriptors3D.PMI3(MolFromSmiles(row.SMILES)):.4f}')
+df['PMI3'] = df.apply(lambda row: PMI3(row), axis=1)
+
+def RadiusOfGyration(row):
+    return float(f'{Chem.Descriptors3D.RadiusOfGyration(MolFromSmiles(row.SMILES)):.4f}')
+df['RadiusOfGyration'] = df.apply(lambda row: RadiusOfGyration(row), axis=1)
+
+def SpherocityIndex(row):
+    return float(f'{Chem.Descriptors3D.SpherocityIndex(MolFromSmiles(row.SMILES)):.4f}')
+df['SpherocityIndex'] = df.apply(lambda row: SpherocityIndex(row), axis=1)
+
+def rdMolDescriptors(row):
+    return float(f'{Chem.Descriptors3D.rdMolDescriptors(MolFromSmiles(row.SMILES)):.4f}')
+df['rdMolDescriptors'] = df.apply(lambda row: rdMolDescriptors(row), axis=1)
+

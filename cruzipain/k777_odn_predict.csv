@@ -1,0 +1,10 @@
+SMILES & nbo_fk+ & nbo_fk- & nbo_fk0 \\
+CN1CCN(C(=O)N[C@@H](Cc2ccccc2)C(=O)N[C@H](/C=C/S(=O)(=O)c2ccccc2)CCc2ccccc2)CC1 & -0.00152 & 0.08531 & 0.04189 \\
+CC(C)(F)C[C@H](N[C@@H](c1ccc(-c2ccc(S(C)(=O)=O)cc2)cc1)C(F)(F)F)C(=O)NC1(C#N)CC1 & -0.01238 & -0.00889 & -0.01063 \\
+N#Cc1cc(C(=O)N2CC3C4CCN3CC2C4c2ccc(CC(=O)NCC(=O)Nc3cc(F)ccc3F)cc2)ccc1F & 0.03462 & 0.0 & 0.01731 \\
+C#CC1CCCN1C(=O)CC(=O)NC(Cc1cc(Br)c2occc2c1)C(=O)NCCc1ccc(OC)cc1 & 0.18625 & 0.01243 & 0.09934 \\
+CC(C)C1NC(=O)C(Cc2ccccc2)N(C)C(=O)C(C(C)C)NC=CN(C)CC(CCCC#CCCl)=NC1=O & 0.58068 & 0.04039 & 0.31054 \\
+COC(=O)NC(Cc1ccccc1)C(Cc1ccc(Cl)cc1)NC(CC(C)C)C(=O)N1CCCC1C#N & 0.03085 & 0.02618 & 0.02852 \\
+CCC1CCN(C(=O)C(CCCC2CCNCC2)NC(=O)c2cc(-c3cccc(F)c3)ccc2C#N)C1=O & 0.02761 & -0.00159 & 0.01301 \\
+N#CC1(NC(=O)C2CCCN2Cc2ccc(-c3c[nH]c(=NC(=O)CC4CC4c4ccccc4)s3)cc2)CC1 & 0.10056 & 0.11756 & 0.10906 \\
+N#Cc1cccc(-c2c(-c3cc(F)cc(C#CCO)c3)cc(F)c(C3(C(F)F)N=C(N)OC4CC43)c2F)c1 & 0.10321 & 0.03908 & 0.07114 \\
